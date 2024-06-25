@@ -27,13 +27,26 @@ jobs:
       - name: Install Dependencies
         run: sudo apt update && sudo apt install build-essential gcc-aarch64-linux-gnu bc flex bison 7zip bash cpio binutils tar git wget libssl-dev
 
-      - name: Build kernel
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: arm64
+
+      - name: Run in Docker
         run: |
-          cd kernel
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- xiaomi_nabu_maverick_defconfig
-          make ARCH=arm64 headers_install
-          cd ../qbootctl
-          make clean all
+          docker run \
+            --rm \
+            -v $(pwd):/${{ github.workspace }} \
+            -w ${{ github.workspace }} \
+            --platform linux/arm64 \
+            ubuntu:latest \
+            uname -a && \
+            apt update && apt install build-essential bc flex bison 7zip bash cpio binutils tar git wget libssl-dev && \
+            cd kernel && \
+            make xiaomi_nabu_maverick_defconfig && \
+            make headers_install && \
+            cd ../qbootctl && \
+            make clean all
       - name: Upload built artifacts
         uses: actions/upload-artifact@v4.0.0
         with:
