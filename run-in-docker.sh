@@ -1,6 +1,7 @@
 #!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
 apt update
-DEBIAN_FRONTEND=noninteractive apt install build-essential bc flex bison 7zip bash cpio binutils tar git wget libssl-dev make
+apt -y install build-essential bc flex bison 7zip bash cpio binutils tar git wget libssl-dev make
 cd kernel 
 make xiaomi_nabu_maverick_defconfig
 make headers_install 
