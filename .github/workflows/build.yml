@@ -1,0 +1,54 @@
+name: build
+on:
+  workflow_dispatch:
+#  schedule:
+#    - cron:  '30 2 * * 1'
+
+jobs:
+  kernel:
+    name: Build kernel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout kernel repo
+        uses: actions/checkout@v4
+        with:
+          repository: 'rodriguezst/linux'
+          ref: 'v6.1.10-nabu-maverickjb'
+          path: kernel
+          fetch-depth: '1'
+      - name: Checkout qbootctl repo
+        uses: actions/checkout@v4
+        with:
+          repository: 'rodriguezst/qbootctl'
+          ref: 'main'
+          fetch-depth: '1'
+
+      - name: Install Dependencies
+        run: sudo apt update && sudo apt install build-essential gcc-aarch64-linux-gnu bc flex bison 7zip bash cpio binutils tar git wget libssl-dev
+
+      - name: Build kernel
+        run: |
+          cd kernel
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- xiaomi_nabu_maverick_defconfig
+          make ARCH=arm64 headers_install
+          cd ..
+          make clean all
+      - name: Upload built artifacts
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          # Artifact name
+          name: qbootctl
+          path: ${{ github.workspace }}/qbootctl
+      -
+        name: Release assets
+        uses: softprops/action-gh-release@v2.0.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: run-${{ github.run_id }}
+          name: Release
+          body: See https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          draft: false
+          prerelease: false
+          files: |
+            qbootctl
