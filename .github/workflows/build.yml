@@ -1,6 +1,7 @@
 name: build
 on:
   workflow_dispatch:
+  push:
 #  schedule:
 #    - cron:  '30 2 * * 1'
 
@@ -41,10 +42,10 @@ jobs:
             --platform linux/arm64 \
             ubuntu:latest \
             uname -a && \
-            apt update && apt install build-essential bc flex bison 7zip bash cpio binutils tar git wget libssl-dev && \
+            sudo apt update && sudo apt install build-essential bc flex bison 7zip bash cpio binutils tar git wget libssl-dev && \
             cd kernel && \
             make xiaomi_nabu_maverick_defconfig && \
-            make headers_install && \
+            sudo make headers_install && \
             cd ../qbootctl && \
             make clean all
       - name: Upload built artifacts
