@@ -29,4 +29,9 @@ jobs:
             -w ${{ github.workspace }} \
             --platform linux/arm64 \
             ubuntu:latest \
-            uname -a
+            uname -a && \
+            mkdir testdir && \
+            cd testdir && \
+            touch testfile && \
+            cd .. && \
+            find .
