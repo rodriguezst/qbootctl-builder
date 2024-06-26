@@ -1,7 +1,7 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt update
-apt -y install build-essential bc flex bison bash zlib-dev meson cmake
+apt -y install build-essential bc flex bison bash zlib1g-dev meson cmake
 cd kernel 
 make headers_install 
 cd ../qbootctl 
