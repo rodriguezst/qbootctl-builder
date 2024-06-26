@@ -6,8 +6,8 @@ on:
 #    - cron:  '30 2 * * 1'
 
 jobs:
-  kernel:
-    name: Build kernel
+  qbootctl:
+    name: Build qbootctl
     runs-on: ubuntu-latest
     steps:
       - 
@@ -26,9 +26,6 @@ jobs:
           ref: 'main'
           path: qbootctl
           fetch-depth: '1'
-
-      - name: Install Dependencies
-        run: sudo apt update && sudo apt install build-essential gcc-aarch64-linux-gnu bc flex bison 7zip bash cpio binutils tar git wget libssl-dev
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -49,7 +46,7 @@ jobs:
         with:
           # Artifact name
           name: qbootctl
-          path: ${{ github.workspace }}/qbootctl/qbootctl
+          path: ${{ github.workspace }}/build/qbootctl
       -
         name: Release assets
         uses: softprops/action-gh-release@v2.0.6
@@ -62,4 +59,4 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            qbootctl/qbootctl
+            build/qbootctl

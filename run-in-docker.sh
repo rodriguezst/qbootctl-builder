@@ -6,5 +6,4 @@ cd kernel
 make headers_install 
 cd ../qbootctl 
 meson build
-meson compile -C build
-mv build/qbootctl .
+meson compile -C ../build
