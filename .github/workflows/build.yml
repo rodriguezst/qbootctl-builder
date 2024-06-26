@@ -16,18 +16,22 @@ jobs:
     name: Build qbootctl
     runs-on: ubuntu-latest
     steps:
+      - name: Test env variables
+        run: |
+          echo "KERNEL_REPO=$KERNEL_REPO"
+          echo "KERNEL_REF=${{ env.KERNEL_REF }}"
       - name: Checkout kernel repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ vars.KERNEL_REPO }}
-          ref: ${{ vars.KERNEL_REF }}
+          repository: ${{ env.KERNEL_REPO }}
+          ref: ${{ env.KERNEL_REF }}
           path: kernel
           fetch-depth: '1'
       - name: Checkout qbootctl repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ vars.QBOOTCTL_REPO }}
-          ref: ${{ vars.QBOOTCTL_REF }}
+          repository: ${{ env.QBOOTCTL_REPO }}
+          ref: ${{ env.QBOOTCTL_REF }}
           path: qbootctl
           fetch-depth: '1'
 
