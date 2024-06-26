@@ -10,8 +10,6 @@ jobs:
     name: Build qbootctl
     runs-on: ubuntu-latest
     steps:
-      - 
-        uses: actions/checkout@v4
       - name: Checkout kernel repo
         uses: actions/checkout@v4
         with:
@@ -31,6 +29,17 @@ jobs:
         uses: docker/setup-qemu-action@v1
         with:
           platforms: arm64
+      
+      - name: Write script for docker
+        run: |
+          echo "export DEBIAN_FRONTEND=noninteractive \n" > run-in-docker.sh
+          echo "apt update \n" >> run-in-docker.sh
+          echo "apt -y install make rsync zlib1g-dev meson cmake \n" >> run-in-docker.sh
+          echo "cd kernel \n" >> run-in-docker.sh
+          echo "make headers_install \n" >> run-in-docker.sh
+          echo "cd ../qbootctl \n" >> run-in-docker.sh
+          echo "meson build \n" >> run-in-docker.sh
+          echo "meson compile -C build \n" >> run-in-docker.sh
 
       - name: Run in Docker
         run: |
@@ -46,7 +55,7 @@ jobs:
         with:
           # Artifact name
           name: qbootctl
-          path: ${{ github.workspace }}/build/qbootctl
+          path: ${{ github.workspace }}/qbootctl/build/qbootctl
       -
         name: Release assets
         uses: softprops/action-gh-release@v2.0.6
@@ -59,4 +68,4 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            build/qbootctl
+            qbootctl/build/qbootctl
