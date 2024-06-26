@@ -32,14 +32,17 @@ jobs:
       
       - name: Write script for docker
         run: |
-          echo "export DEBIAN_FRONTEND=noninteractive \n" > run-in-docker.sh
-          echo "apt update \n" >> run-in-docker.sh
-          echo "apt -y install make rsync zlib1g-dev meson cmake \n" >> run-in-docker.sh
-          echo "cd kernel \n" >> run-in-docker.sh
-          echo "make headers_install \n" >> run-in-docker.sh
-          echo "cd ../qbootctl \n" >> run-in-docker.sh
-          echo "meson build \n" >> run-in-docker.sh
-          echo "meson compile -C build \n" >> run-in-docker.sh
+          echo "#!/bin/bash\n" > run-in-docker.sh
+          echo "export DEBIAN_FRONTEND=noninteractive\n" > run-in-docker.sh
+          echo "apt update\n" >> run-in-docker.sh
+          echo "apt -y install make rsync zlib1g-dev meson cmake\n" >> run-in-docker.sh
+          echo "cd kernel\n" >> run-in-docker.sh
+          echo "make headers_install\n" >> run-in-docker.sh
+          echo "cd ../qbootctl\n" >> run-in-docker.sh
+          echo "meson build\n" >> run-in-docker.sh
+          echo "meson compile -C build\n" >> run-in-docker.sh
+          chmod +x run-in-docker.sh
+          cat run-in-docker.sh
 
       - name: Run in Docker
         run: |
