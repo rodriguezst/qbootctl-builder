@@ -19,15 +19,15 @@ jobs:
       - name: Checkout kernel repo
         uses: actions/checkout@v4
         with:
-          repository: $KERNEL_REPO
-          ref: $KERNEL_REF
+          repository: ${{ vars.KERNEL_REPO }}
+          ref: ${{ vars.KERNEL_REF }}
           path: kernel
           fetch-depth: '1'
       - name: Checkout qbootctl repo
         uses: actions/checkout@v4
         with:
-          repository: $QBOOTCTL_REPO
-          ref: $QBOOTCTL_REF
+          repository: ${{ vars.QBOOTCTL_REPO }}
+          ref: ${{ vars.QBOOTCTL_REF }}
           path: qbootctl
           fetch-depth: '1'
 
