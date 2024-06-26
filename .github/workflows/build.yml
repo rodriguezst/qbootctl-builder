@@ -5,6 +5,12 @@ on:
 #  schedule:
 #    - cron:  '30 2 * * 1'
 
+env:
+  KERNEL_REPO: 'rodriguezst/linux'
+  KERNEL_REF: 'v6.1.10-nabu-maverickjb'
+  QBOOTCTL_REPO: 'rodriguezst/qbootctl'
+  QBOOTCTL_REF: 'main'
+
 jobs:
   qbootctl:
     name: Build qbootctl
@@ -13,15 +19,15 @@ jobs:
       - name: Checkout kernel repo
         uses: actions/checkout@v4
         with:
-          repository: 'rodriguezst/linux'
-          ref: 'v6.1.10-nabu-maverickjb'
+          repository: $KERNEL_REPO
+          ref: $KERNEL_REF
           path: kernel
           fetch-depth: '1'
       - name: Checkout qbootctl repo
         uses: actions/checkout@v4
         with:
-          repository: 'rodriguezst/qbootctl'
-          ref: 'main'
+          repository: $QBOOTCTL_REPO
+          ref: $QBOOTCTL_REF
           path: qbootctl
           fetch-depth: '1'
 
@@ -33,7 +39,7 @@ jobs:
       - name: Write script for docker
         run: |
           echo "#!/bin/bash" > run-in-docker.sh
-          echo "export DEBIAN_FRONTEND=noninteractive" > run-in-docker.sh
+          echo "export DEBIAN_FRONTEND=noninteractive" >> run-in-docker.sh
           echo "apt update" >> run-in-docker.sh
           echo "apt -y install make rsync zlib1g-dev meson cmake" >> run-in-docker.sh
           echo "cd kernel" >> run-in-docker.sh
@@ -42,7 +48,6 @@ jobs:
           echo "meson build" >> run-in-docker.sh
           echo "meson compile -C build" >> run-in-docker.sh
           chmod +x run-in-docker.sh
-          cat run-in-docker.sh
 
       - name: Run in Docker
         run: |
@@ -71,4 +76,4 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            qbootctl/build/qbootctl
+            ${{ github.workspace }}/qbootctl/build/qbootctl
